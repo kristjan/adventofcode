@@ -1,0 +1,5 @@
+e => Al
+Al => BCa
+Ca => D
+
+BD
