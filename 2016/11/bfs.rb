@@ -45,12 +45,17 @@ def print(state)
   puts state.reverse.map(&:inspect)
 end
 
+def summary(state)
+  state.map do |floor|
+    floor.partition { |thing| chip?(thing) }.map(&:size)
+  end
+end
 
 def plan(initial_state, initial_floor)
   queue = Queue.new
   queue << Item.new(0, initial_floor, deep_dup(initial_state))
   seen = Set.new
-  seen << [initial_floor, deep_dup(initial_state)]
+  seen << [initial_floor, summary(initial_state)]
 
   last_steps = -1
 
@@ -92,7 +97,7 @@ def plan(initial_state, initial_floor)
             exit
           end
 
-          next_try = [next_floor, next_state]
+          next_try = [next_floor, summary(next_state)]
           if !seen.include?(next_try) && safe?(next_state)
             seen << next_try
             queue << Item.new(current.steps + 1, next_floor, next_state)
@@ -135,7 +140,7 @@ SILLY_TRY = [
   [:elerium_generator, :elerium_chip, :dilithium_generator, :dilithium_chip],
 ]
 
-state = floors(SILLY_TRY)
+state = floors(SECOND_HALF)
 THING_COUNT = state.map(&:size).inject(:+)
 
-plan state, 3
+plan state, 0
