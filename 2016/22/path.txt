@@ -1,0 +1,15 @@
+All the nodes in this input can contain their neighbor's data except for a wall
+of huge nodes at y=19, and the empty node is on the other side of the wall. So
+the minimal possible path is:
+
+4 move the space to wall
+23 to the end of the wall
+2 across the wall
+24 down the wall (and next to the Goal's x)
+18 to y = 0
+1 to move the Goal into the space
+36 times:
+  4 to move the empty space back in front of the goal
+  1 to move the Goal into it
+
+= 252
