@@ -1,0 +1,30 @@
+cpy a d
+inc d 2550
+nop
+nop
+nop
+nop
+nop
+nop
+cpy d a
+jnz 0 0
+cpy a b
+div b 2 a c
+nop
+nop
+nop
+nop
+nop
+nop
+nop
+nop
+cpy 2 b
+jnz c 2
+jnz 1 4
+dec b
+dec c
+jnz 1 -4
+jnz 0 0
+out b
+jnz a -19
+jnz 1 -21
