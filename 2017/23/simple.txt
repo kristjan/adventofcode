@@ -1,0 +1,26 @@
+set b 108400
+set c 125400
+set f 1   #
+set d 2   #
+set e 2   # <---------------+
+set g d   # <-------------+ |
+mul g e   #               | |
+sub g b   #               | |
+jnz g 2   # if d * e = b  | |
+jnz 1 0   #   f = 0       | |
+add e 1   #               | |
+set g e   #               | |
+sub g b   #               | |
+jnz g -8  # while e < b  -+ |
+add d 1   #                 |
+set g d   #                 |
+sub g b   #                 |
+jnz g -13 # while d < b  ---+
+jnz f 2   # if f == 0
+add h 1   #   h += 1
+set g b   #
+sub g c   #
+jnz g 2   # if b == c
+jnz 1 3   #   exit
+add b 17  #
+jnz 1 -23 #
