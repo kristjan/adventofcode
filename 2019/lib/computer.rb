@@ -1,23 +1,46 @@
 class Computer
-  def initialize(program)
+  def initialize(program, pause_on_output = false)
     @program = program.dup
+    @pause_on_output = pause_on_output
+    @output = []
+    @input = []
     @ip = 0
+    @halted = false
   end
 
-  def manual_input(value)
-    @manual_input = value
+  def input(value)
+    @input.push(value)
   end
 
+  def output
+    @output.shift
+  end
+
+  def output?
+    @output.any?
+  end
+
+  def halted?
+    @halted
+  end
+
+  def running?
+    !@halted
+  end
 
   def compute
     while true
       cmd = Cmd.new(@program, @program[@ip..(@ip+3)])
-      cmd.input(@manual_input) if cmd.needs_input?
+      cmd.input(@input.shift) if cmd.needs_input?
       result = cmd.run
       #puts @program.join(',')
-      return result if cmd.exit?
-      puts result if cmd.has_output?
+      @output << result if cmd.has_output?
+      if cmd.exit?
+        @halted = true
+        return result
+      end
       @ip = cmd.next_ip(@ip)
+      return if @pause_on_output && cmd.has_output?
     end
   end
 end
@@ -67,14 +90,11 @@ class Cmd
     when 2
       @program[@params[2]] = value(0) * value(1)
     when 3
-      @program[@params[0]] = if @input
-                               @input
-                             else
-                               print '> '
-                               $stdin.gets.to_i
-                             end
+      raise 'No input' if @input.nil?
+      #puts "Using input: #{@input}"
+      @program[@params[0]] = @input
     when 4
-      value(0)
+      return value(0)
     when 5
       @next_ip = value(1) if value(0) != 0
     when 6
@@ -84,10 +104,11 @@ class Cmd
     when 8
       @program[@params[2]] = value(0) == value(1) ? 1 : 0
     when 99
-      @program[0]
+      return @program[0]
     else
       raise "Bad cmd #{@cmd}"
     end
+    nil
   end
 
   def next_ip(cur_ip)
